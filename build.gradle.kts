@@ -22,7 +22,7 @@ buildscript {
 
 plugins {
     base
-    kotlin("multiplatform") version "1.5.10"
+    kotlin("multiplatform") version "1.6.21"
 }
 apply(plugin = "io.jumpco.open.kfsm.viz-plugin")
 
@@ -30,7 +30,11 @@ repositories {
     mavenLocal()
     mavenCentral()
 }
-
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(11))
+    }
+}
 version = "LOCAL-SNAPSHOT"
 
 val kfsmVersion: String by project
@@ -38,7 +42,7 @@ val kfsmVersion: String by project
 kotlin {
     project.logger.lifecycle("target:${OperatingSystem.current()}")
     jvm()
-    js { nodejs {} }
+    js(IR) { nodejs {} }
     /* on ice for now.
     wasm32("wasm") {
         binaries {
@@ -82,25 +86,29 @@ kotlin {
             dependencies {
                 implementation(kotlin("stdlib"))
                 implementation("io.jumpco.open:kfsm-$depSuffix:$kfsmVersion")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-linuxx64:1.6.1")
+
             }
         }
         val jvmMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-jdk8"))
                 implementation("io.jumpco.open:kfsm-jvm:$kfsmVersion")
+                runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.1")
+
             }
         }
         val jvmTest by getting {
             dependencies {
-                implementation("junit:junit:4.13")
-                implementation("io.jumpco.open:kfsm-viz:1.5.0")
+                implementation(kotlin("test-junit"))
+                implementation("io.jumpco.open:kfsm-viz:1.5.2.4")
             }
         }
         val jsMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-js"))
                 implementation("io.jumpco.open:kfsm-js:$kfsmVersion")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.5.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.6.1")
             }
         }
         /*
