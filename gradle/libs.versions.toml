@@ -1,0 +1,16 @@
+[versions]
+kotlin = "2.4.21"
+kfsm = "2.0.0"
+kfsm-viz = "2.0.1"
+kfsmVizPlugin = "2.0.2"
+coroutines = "1.11.0"
+
+[libraries]
+kfsm-lib = { module = "org.infosmid:kfsm", version.ref = "kfsm" }
+kfsm-viz = { module = "org.infosmid:kfsm-viz", version.ref = "kfsm-viz" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+
+[plugins]
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kfsm-viz = { id = "org.infosmid.plugins.kfsm-viz", version.ref = "kfsmVizPlugin" }

@@ -1,0 +1,104 @@
+plugins {
+    id 'base'
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kfsm.viz)
+}
+
+version = 'LOCAL-SNAPSHOT'
+
+def mainClassName = 'org.infosmid.kfsm.sample.KFsmSampleKt'
+
+kotlin {
+    jvmToolchain(17)
+    jvm()
+
+    macosArm64() {
+        binaries {
+            executable {
+                entryPoint = 'org.infosmid.kfsm.sample.main'
+            }
+        }
+    }
+    wasmJs {
+        browser {
+            testTask {
+                useKarma {
+                    useChromeHeadless()
+                }
+            }
+        }
+        nodejs()
+        binaries.executable()
+    }
+    wasmWasi {
+        nodejs()
+        binaries.executable()
+    }
+    js {
+        browser()
+        binaries.executable()
+        nodejs()
+    }
+    applyDefaultHierarchyTemplate()
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation(libs.kfsm.lib)
+                implementation(libs.kotlinx.coroutines.core)
+            }
+        }
+        commonTest {
+            dependencies {
+                implementation(libs.kotlin.test)
+            }
+        }
+        jvmTest {
+            dependencies {
+                implementation(libs.kfsm.viz)
+            }
+        }
+        // No stdlib metadata exists for a wasmJs + wasmWasi intermediate source set, so
+        // share the sources by compiling the directory in both targets instead.
+        wasmJsMain {
+            kotlin.srcDir('src/wasmMain/kotlin')
+        }
+        wasmWasiMain {
+            kotlin.srcDir('src/wasmMain/kotlin')
+        }
+    }
+}
+
+def jvmJar = tasks.named('jvmJar')
+
+def fatJar = tasks.register('fatJar', Jar) {
+    archiveBaseName.set("${project.name}-fat")
+    manifest {
+        attributes(
+                'Implementation-Title': 'kfsm-fat-jar',
+                'Implementation-Version': archiveVersion,
+                'Main-Class': mainClassName
+        )
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from({
+        configurations.jvmRuntimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    })
+    with(jvmJar.get())
+}
+
+tasks.named('assemble') {
+    dependsOn(fatJar)
+    dependsOn('generateFsmViz')
+}
+
+kfsmViz {
+    fsm('LockFSM') {
+        outputFolder = file('generated')
+        input = file('src/commonMain/kotlin/org/infosmid/kfsm/sample/lock.kt')
+        isGeneratePlantUml = true
+        isGenerateMermaid = true
+        isGenerateAsciidoc = true
+        output = 'lock-gen'
+    }
+}

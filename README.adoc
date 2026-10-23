@@ -9,21 +9,16 @@ This project contains samples for using link:https://github.com/open-jumpco/kfsm
 
 [source,bash]
 ----
-git clone https://github.com/open-jumpco/kfsm-samples.git
+git clone https://github.com/infosmid-org/kfsm-samples.git
 ./gradlew assemble
 ----
 
 === Build Graal Native Image
 
-This was tested by building normal build with JDK 8 and 11 and then using Graal 19.1.1 to build the native image.
-
-
 [source,bash]
 ----
-# Install GraalVM native-image compiler
-gu install native-image
-# Create the native image
-./gradlew nativeImage 
+mkdir -p ./build/native
+native-image -jar ./build/libs/kfsm-samples-fat-LOCAL-SNAPSHOT.jar ./build/native/kfsm-samples -O3 --gc=G1 -march=native
 ----
 
 _I prefer using link:https://sdkman.io/[sdkman] to switch runtimes while doing this kind of exercise._
@@ -100,10 +95,16 @@ lock()
 ----
 |===
 
-== Generated State Diagram
+== Generated Diagrams
+
+=== PlantUML State Diagram
 
 image:lock.png[]
 
-To learn more about visualization visit link:https://github.com/open-jumpco/kfsm-viz[kfsm-viz] and
-link:https://github.com/open-jumpco/kfsm-viz-plugin[kfsm-viz-plugin]
+=== Mermaid State Diagram
+
+image:lock-mmd.png[]
+
+To learn more about visualization, visit link:https://github.com/infosmid-org/kfsm-viz[kfsm-viz] and
+link:https://github.com/infosmid-org/kfsm-viz-plugin[kfsm-viz-plugin]
 

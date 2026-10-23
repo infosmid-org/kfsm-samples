@@ -1,0 +1,15 @@
+---
+title: LockFSM
+config:
+  themeCSS: |
+    .edgeLabel p:has(br) { text-align: left; }
+---
+stateDiagram-v2
+state LockFSM {
+  LOCKED --> DOUBLE_LOCKED : LOCK#160;#8594;#160;#123;<br/>doubleLock()<br/>#125;
+  LOCKED --> UNLOCKED : UNLOCK#160;#8594;#160;#123;<br/>unlock()<br/>#125;
+  DOUBLE_LOCKED --> LOCKED : UNLOCK#160;#8594;#160;#123;<br/>doubleUnlock()<br/>#125;
+  DOUBLE_LOCKED --> DOUBLE_LOCKED : LOCK#160;#8594;#160;#123;<br/>alarm()<br/>#125;
+  UNLOCKED --> LOCKED : LOCK#160;#8594;#160;#123;<br/>lock()<br/>#125;
+}
+
