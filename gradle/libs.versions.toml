@@ -1,8 +1,8 @@
 [versions]
 kotlin = "2.4.21"
 kfsm = "2.0.0"
-kfsm-viz = "2.0.1"
-kfsmVizPlugin = "2.0.2"
+kfsm-viz = "2.0.2"
+kfsmVizPlugin = "2.0.3"
 coroutines = "1.11.0"
 
 [libraries]
